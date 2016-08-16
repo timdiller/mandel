@@ -108,8 +108,8 @@ class MandelPlot(HasTraits):
                         dtype=np.uint16)
 
     def _ch_plot_default(self):
-        x = (self.x_low + self.x_high) / 2
-        y = (self.y_low + self.y_high) / 2
+        x = 0.26
+        y = 0.
         h_cross_x = np.array([self.x_low, self.x_high])
         h_cross_y = np.array([y, y])
         v_cross_x = np.array([x, x])
@@ -129,6 +129,8 @@ class MandelPlot(HasTraits):
         ch_plot.tools.append(cross_hair_tool)
         self.crosshair = cross_hair_tool
         self.on_trait_change(self.draw_cross_hairs,
+                             "crosshair.selected_x, crosshair.selected_y")
+        self.on_trait_change(self.render_julia,
                              "crosshair.selected_x, crosshair.selected_y")
         return ch_plot
 
@@ -185,8 +187,6 @@ class MandelPlot(HasTraits):
         renderer.index.set_data(x_range, y_range)
         self.draw_cross_hairs()
 
-        self.render_julia()
-
     def draw_cross_hairs(self):
         x = self.crosshair.selected_x
         y = self.crosshair.selected_y
@@ -209,33 +209,6 @@ class MandelPlot(HasTraits):
         return x_range, y_range
 
     def render_julia(self):
-        # x = self.crosshair.selected_x
-        # y = self.crosshair.selected_y
-        # c = x + y * 1j
-        # z_x = x
-        # z_y = y
-        # xmin, xmax = self.julia_bounds_x
-        # ymin, ymax = self.julia_bounds_y
-        # # import ipdb
-        # # ipdb.set_trace()
-        # # self.julia_data = generate_julia(x, y, c, self.detail)
-        # for i in xrange(self.detail * 5):
-        #     z = z_x + z_y * 1j
-        #     new_z = np.sqrt(z ** 2 - c) * random.choice([-1, 1])
-        #     # z_x = z_x ** 2 - z_y ** 2 + x
-        #     # z_y = 2 * z_x * z_y + y
-        #     z_x = new_z.real
-        #     z_y = new_z.imag
-        #     idx_x = np.clip(int(self.resolution * min(max(
-        #         (z_x - xmin) / (xmax - xmin), xmin), xmax)),
-        #         0, self.julia_data.shape[0] - 1)
-        #     idx_y = np.clip(int(self.resolution * min(max(
-        #         (z_y - ymin) / (ymax - ymin), ymin), xmax)),
-        #         0, self.julia_data.shape[1] - 1)
-        #     self.julia_data[idx_y, idx_x] += 1
-        #     print "({:.4f}, {:.4f}) -> ({}, {})".format(
-        #         z_x, z_y, idx_x, idx_y)
-        # print np.where(self.julia_data > 0)
         self.julia_plot.data.set_data("img", self.julia_img)
 
 if __name__ == "__main__":
