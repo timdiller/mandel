@@ -1,14 +1,14 @@
 from math import sqrt
 import numpy as np
 
-from chaco.api import ArrayPlotData, Plot, magma
+from chaco.api import ArrayPlotData, Plot, hot
 from chaco.tools.api import PanTool, ZoomTool
 from enable.api import ComponentEditor
 from traits.api import (
     Array, Event, HasTraits, Instance, Int, Property, Tuple,
     cached_property, on_trait_change
 )
-from traitsui.api import Item, RangeEditor, View
+from traitsui.api import Item, View
 
 from mandel import generate_mandelbrot
 
@@ -61,7 +61,9 @@ class MandelView(HasTraits):
         plot.img_plot("mandelbrot_img",
                       xbounds=self.x_limits,
                       ybounds=self.y_limits,
-                      colormap=magma)
+                      colormap=hot,
+                      )
+
         plot.x_axis.title = "Imaginary"
         plot.y_axis.title = "Real"
         self.pan_tool = NotifyingPan(plot)
@@ -119,4 +121,4 @@ view = View(
 
 if __name__ == "__main__":
     mv = MandelView()
-    mv.edit_traits(view=view)
+    mv.configure_traits(view=view)
